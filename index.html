@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BruCheck Pro | Production Build</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="phone-frame">
+    <div class="status-bar">
+        <span>10:30 AM</span>
+        <div><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-half"></i></div>
+    </div>
+
+    <div id="page-splash" class="page active">
+        <div class="logo-box">B</div>
+        <h1>BRUCHECK</h1>
+        <p>Expert Vehicle Audits</p>
+        <button class="btn-main" onclick="nav('page-dash')">INSPECTOR LOGIN</button>
+    </div>
+
+    <div id="page-dash" class="page">
+        <header class="app-header">
+            <div><small>Good Morning,</small><h2>Danial (24B)</h2></div>
+            <div class="avatar">DB</div>
+        </header>
+        <div class="search-bar"><i class="fas fa-search"></i> <input type="text" placeholder="Search Plate Number..."></div>
+        <div class="content-scroll">
+            <div class="section-label">ACTIVE JOBS</div>
+            <div class="glass-card" onclick="openJob('Toyota Vios', 'Standard')">
+                <div class="icon-wrap blue"><i class="fas fa-car"></i></div>
+                <div class="info"><strong>Toyota Vios (2018)</strong><small>Gadong District</small></div>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="glass-card gold-border" onclick="openJob('BMW 320i', 'Gold')">
+                <div class="icon-wrap gold"><i class="fas fa-crown"></i></div>
+                <div class="info"><strong>BMW 320i (2021)</strong><small>Jerudong Area</small> <span class="badge-gold">GOLD TIER</span></div>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-history" class="page">
+        <header class="app-header"><h2>Audit History</h2></header>
+        <div class="content-scroll">
+            <div class="glass-card completed">
+                <div class="icon-wrap"><i class="fas fa-check"></i></div>
+                <div class="info"><strong>Nissan Almera</strong><small>March 23, 2026</small></div>
+                <strong>88%</strong>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-settings" class="page">
+        <header class="app-header"><h2>Profile</h2></header>
+        <div class="content-scroll">
+            <div class="glass-card"><span>Inspector ID: 24B1226</span></div>
+            <div class="glass-card"><span>Offline Database: Synced</span></div>
+            <button class="btn-main logout" onclick="nav('page-splash')">LOGOUT</button>
+        </div>
+    </div>
+
+    <div id="page-inspect" class="page">
+        <div class="inspect-header">
+            <i class="fas fa-arrow-left" onclick="nav('page-dash')"></i>
+            <h3 id="inspect-car-title">Audit Mode</h3>
+        </div>
+        <div class="step-nav">
+            <div class="step-tab active" id="tab-general" onclick="switchTab('general')">GENERAL</div>
+            <div class="step-tab" id="tab-engine" onclick="switchTab('engine')">ENGINE</div>
+            <div class="step-tab" id="tab-interior" onclick="switchTab('interior')">INTERIOR</div>
+        </div>
+        <div id="checklist-scroll" class="content-scroll"></div>
+        <div class="footer-action"><button class="btn-main" onclick="submitAudit()">FINISH REPORT</button></div>
+    </div>
+
+    <div id="page-report" class="page">
+        <div class="report-view">
+            <i class="fas fa-shield-alt gold-text" style="font-size: 50px;"></i>
+            <h2 id="final-tier-name">REPORT</h2>
+            <div class="score-circle" id="final-score">0%</div>
+            <div class="summary-box" id="summary-data"></div>
+            <button class="btn-main" onclick="nav('page-dash')">DONE</button>
+        </div>
+    </div>
+
+    <nav class="bottom-nav" id="main-nav">
+        <div class="nav-item active" id="nav-home" onclick="nav('page-dash')"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="nav-item" id="nav-history" onclick="nav('page-history')"><i class="fas fa-history"></i><span>History</span></div>
+        <div class="nav-item" id="nav-settings" onclick="nav('page-settings')"><i class="fas fa-user-circle"></i><span>Profile</span></div>
+    </nav>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

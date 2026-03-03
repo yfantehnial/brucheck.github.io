@@ -1,0 +1,19 @@
+function submitAudit() {
+    const btn = document.querySelector('.footer-action .btn-main');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SYNCING TO CLOUD...';
+    btn.disabled = true;
+
+    // Simulate Network Delay for "Realism"
+    setTimeout(() => {
+        let passes = Object.values(currentAudit.results).filter(v => v === "PASS").length;
+        let total = Object.keys(currentAudit.results).length;
+        let score = total === 0 ? 0 : Math.round((passes/total) * 100);
+
+        document.getElementById('final-score').innerText = score + "%";
+        document.getElementById('final-tier-name').innerText = currentAudit.tier + " AUDIT";
+        
+        btn.innerHTML = 'FINISH REPORT';
+        btn.disabled = false;
+        nav('page-report');
+    }, 2000); 
+}
