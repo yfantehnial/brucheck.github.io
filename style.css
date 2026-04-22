@@ -1,107 +1,34 @@
-:root {
-    --primary: #1ed760;
-    --dark-bg: #000000;
-    --card-bg: #121212;
-    --text-dim: #a7a7a7;
-    --padding-main: 24px;
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 2rem;
 }
 
-* { box-sizing: border-box; }
-body { font-family: 'Inter', sans-serif; background: #1a1a1a; margin: 0; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-
-.phone-frame { 
-    width: 375px; height: 812px; 
-    background: var(--dark-bg); 
-    border-radius: 40px; 
-    border: 10px solid #222; 
-    position: relative; 
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+.section-label {
+    font-size: 0.65rem; font-weight: 900; color: #3b82f6;
+    text-transform: uppercase; letter-spacing: 0.25em;
 }
 
-.page { display: none; height: 100%; flex-direction: column; animation: fadeIn 0.3s ease; }
-.active { display: flex; }
-
-/* Dashboard Styling */
-.home-header { 
-    padding: 40px var(--padding-main) 20px; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
+.m-input {
+    width: 100%; background: #000; border: 1px solid #222;
+    padding: 1rem; border-radius: 1.25rem; color: #fff; outline: none; transition: 0.3s;
 }
-.user-profile { display: flex; align-items: center; gap: 15px; }
-.avatar-large { 
-    width: 50px; height: 50px; 
-    background: var(--primary); 
-    color: black; font-weight: 800; 
-    border-radius: 15px; 
-    display: flex; justify-content: center; align-items: center; 
+.m-input:focus { border-color: #3b82f6; }
+
+#m-ring, #u-ring { transition: stroke-dashoffset 1s ease-in-out; }
+
+/* PDF PRINT STYLES */
+@media print {
+    .no-print { display: none !important; }
+    body { background: white !important; }
+    #user-view { background: white !important; }
+    #print-area { display: block !important; }
 }
-.home-header h2 { margin: 0; font-size: 18px; }
-.home-header small { color: var(--text-dim); }
-
-/* Stats Grid */
-.stats-grid { 
-    display: grid; grid-template-columns: 1fr 1fr 1fr; 
-    gap: 12px; padding: 0 var(--padding-main); margin-bottom: 30px; 
+main {
+    background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.03), transparent);
 }
-.stat-card { 
-    background: var(--card-bg); padding: 15px; border-radius: 18px; 
-    display: flex; flex-direction: column; align-items: center;
-}
-.stat-card.highlight { background: #1a1a1a; border: 1px solid var(--primary); }
-.stat-val { font-size: 18px; font-weight: 800; color: var(--primary); }
-.stat-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; margin-top: 4px; }
-
-/* Modern Job Cards */
-.section-header { 
-    padding: 0 var(--padding-main); 
-    display: flex; justify-content: space-between; align-items: center; 
-    margin-bottom: 15px; 
-}
-.view-all { color: var(--primary); font-size: 12px; }
-
-.job-card { 
-    background: var(--card-bg); 
-    margin: 0 var(--padding-main) 12px; 
-    padding: 20px; 
-    border-radius: 20px; 
-    display: flex; align-items: center; gap: 15px;
-    transition: 0.3s;
-}
-.job-card:active { transform: scale(0.96); opacity: 0.8; }
-.job-card.gold-tier { border: 1px solid rgba(255, 215, 0, 0.3); }
-
-.job-icon { 
-    width: 44px; height: 44px; border-radius: 12px; 
-    display: flex; justify-content: center; align-items: center; font-size: 18px;
-}
-.job-icon.blue { background: rgba(30, 215, 96, 0.1); color: var(--primary); }
-.job-icon.gold { background: rgba(255, 215, 0, 0.1); color: #ffd700; }
-
-.job-details { flex: 1; }
-.job-details p { margin: 4px 0 0; font-size: 12px; color: var(--text-dim); }
-
-/* Sticky Footer Navigation */
-.main-nav { 
-    background: rgba(18, 18, 18, 0.8); backdrop-filter: blur(20px);
-    height: 80px; display: flex; justify-content: space-around; 
-    padding-top: 15px; border-top: 1px solid #222;
-}
-.nav-btn { display: flex; flex-direction: column; align-items: center; color: #555; gap: 5px; font-size: 10px; }
-.nav-btn.active { color: var(--primary); }
-
-/* Scroll Settings */
-.content-scroll { flex: 1; overflow-y: auto; }
-.content-scroll.padded { padding: 20px; }
-
-/* Buttons */
-.btn-submit { 
-    width: calc(100% - 48px); margin: 20px 24px; 
-    padding: 18px; background: var(--primary); 
-    border: none; border-radius: 16px; 
-    font-weight: 800; font-size: 15px; cursor: pointer;
-}
-
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
