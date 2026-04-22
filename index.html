@@ -1,127 +1,140 @@
-const CHECKS = [
-    { id: 'eng', label: 'Engine Integrity', critical: true },
-    { id: 'trans', label: 'Transmission System', critical: true },
-    { id: 'cool', label: 'Cooling Efficiency', critical: false },
-    { id: 'brake', label: 'Braking Force', critical: true },
-    { id: 'susp', label: 'Suspension Setup', critical: false },
-    { id: 'elec', label: 'Electronics/OBD', critical: false }
-];
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BruCheck | Official Verification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#050505] text-slate-200 min-h-screen">
 
-let db = JSON.parse(localStorage.getItem('bru_data')) || {
-    model: "", vin: "", notes: "", inspector: "", results: {}
-};
+    <div id="gate" class="fixed inset-0 z-[100] bg-[#050505] flex flex-col items-center justify-center p-6">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-black italic tracking-tighter text-white uppercase">BRU<span class="text-blue-500">CHECK</span></h1>
+            <p class="text-slate-500 text-xs tracking-[0.3em] uppercase mt-2">Certified Automotive Standard</p>
+        </div>
+        <div class="w-full max-w-sm space-y-4">
+            <button onclick="enterApp('mechanic')" class="w-full py-5 bg-blue-600 rounded-2xl font-black hover:bg-blue-500 transition shadow-lg shadow-blue-900/20 uppercase tracking-widest">Mechanic Hub</button>
+            <button onclick="enterApp('user')" class="w-full py-5 bg-slate-900 rounded-2xl font-black hover:bg-slate-800 transition uppercase tracking-widest">User Portal</button>
+        </div>
+    </div>
 
-function enterApp(role) {
-    document.getElementById('gate').classList.add('hidden');
-    if (role === 'mechanic') {
-        document.getElementById('mechanic-view').classList.remove('hidden');
-        initMechanic();
-    } else {
-        document.getElementById('user-view').classList.remove('hidden');
-        renderUser();
-    }
-}
+    <div id="mechanic-view" class="hidden min-h-screen pb-20">
+        <nav class="p-6 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-md sticky top-0 z-50">
+            <span class="font-black text-xl italic uppercase tracking-tighter">Admin<span class="text-blue-500">Panel</span></span>
+            <button onclick="exit()" class="text-xs font-bold text-slate-500 hover:text-white uppercase">Logout</button>
+        </nav>
 
-function exit() { location.reload(); }
-
-// MECHANIC HUB
-function initMechanic() {
-    const list = document.getElementById('m-checklist');
-    list.innerHTML = CHECKS.map(item => `
-        <label class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-blue-500 transition cursor-pointer">
-            <span class="text-sm font-bold text-slate-400">${item.label}</span>
-            <input type="checkbox" class="w-6 h-6 accent-blue-500" 
-                ${db.results[item.id] ? 'checked' : ''} 
-                onchange="db.results['${item.id}'] = this.checked; updateScore();">
-        </label>
-    `).join('');
-    
-    document.getElementById('m-model').value = db.model;
-    document.getElementById('m-vin').value = db.vin;
-    document.getElementById('m-notes').value = db.notes;
-    document.getElementById('m-name').value = db.inspector;
-    updateScore();
-}
-
-function updateScore() {
-    const passed = Object.values(db.results).filter(v => v).length;
-    const score = Math.round((passed / CHECKS.length) * 100);
-    document.getElementById('m-score').innerText = score + "%";
-    document.getElementById('m-ring').style.strokeDashoffset = 502 - (502 * score) / 100;
-}
-
-function publishReport() {
-    db.model = document.getElementById('m-model').value;
-    db.vin = document.getElementById('m-vin').value;
-    db.notes = document.getElementById('m-notes').value;
-    db.inspector = document.getElementById('m-name').value;
-    localStorage.setItem('bru_data', JSON.stringify(db));
-    alert("🚀 Data Sync Successful!");
-}
-
-// USER PORTAL & PDF
-function renderUser() {
-    const passed = Object.values(db.results).filter(v => v).length;
-    const score = Math.round((passed / CHECKS.length) * 100);
-    const criticalFails = CHECKS.filter(item => !db.results[item.id] && item.critical);
-    
-    document.getElementById('u-model').innerText = db.model || "Unnamed Vehicle";
-    document.getElementById('u-vin').innerText = `Verification: ${db.vin || 'N/A'}`;
-    document.getElementById('u-percent').innerText = score + "%";
-    document.getElementById('u-ring').style.strokeDashoffset = 490 - (490 * score) / 100;
-
-    const notesBox = document.getElementById('u-notes');
-    if (criticalFails.length > 0) {
-        notesBox.innerHTML = `<span class="text-red-200 font-black uppercase text-xs">Urgent Security Alert:</span><br> This vehicle has ${criticalFails.length} critical safety failures that require immediate repair.`;
-    } else {
-        notesBox.innerText = db.notes || "Vehicle is operationally sound and meets all verification standards.";
-    }
-
-    const list = document.getElementById('u-list');
-    list.innerHTML = CHECKS.map(item => {
-        const ok = db.results[item.id];
-        const isCritical = !ok && item.critical;
-        return `
-            <div class="bg-white p-6 rounded-[2.2rem] border border-slate-100 flex items-center gap-4 ${isCritical ? 'ring-2 ring-red-100' : ''}">
-                <div class="w-12 h-12 rounded-2xl flex items-center justify-center ${ok ? 'bg-blue-50 text-blue-500' : 'bg-red-50 text-red-400'}">
-                    <i class="fa-solid ${ok ? 'fa-check' : 'fa-triangle-exclamation'}"></i>
+        <main class="max-w-6xl mx-auto p-6 md:p-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-6">
+                <div class="glass-card p-8">
+                    <h3 class="section-label">1. Vehicle Details</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <input type="text" id="m-model" placeholder="Model Name (e.g. Lexus IS200)" class="m-input">
+                        <input type="text" id="m-vin" placeholder="Chassis ID / VIN" class="m-input">
+                    </div>
                 </div>
-                <div>
-                    <p class="font-black text-slate-800 text-sm tracking-tight">${item.label}</p>
-                    <p class="text-[9px] uppercase font-bold tracking-widest ${ok ? 'text-blue-400' : 'text-red-300'}">
-                        ${ok ? 'Condition: Optimal' : (item.critical ? 'CRITICAL FAILURE' : 'Service Due')}
-                    </p>
+                <div class="glass-card p-8">
+                    <h3 class="section-label">2. Diagnostic Checklist</h3>
+                    <div id="m-checklist" class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4"></div>
                 </div>
-            </div>`;
-    }).join('');
+                <div class="glass-card p-8">
+                    <h3 class="section-label">3. Inspector's Authorization</h3>
+                    <input type="text" id="m-name" placeholder="Lead Inspector Name" class="m-input mb-4">
+                    <textarea id="m-notes" placeholder="Final technical notes for the client..." class="m-input h-24"></textarea>
+                </div>
+            </div>
+            <div class="space-y-6">
+                <div class="glass-card p-8 text-center sticky top-28">
+                    <h3 class="section-label mb-8">Verification Score</h3>
+                    <div class="relative w-44 h-44 mx-auto mb-10">
+                        <svg class="w-full h-full transform -rotate-90">
+                            <circle cx="88" cy="88" r="80" stroke="#111" stroke-width="12" fill="none" />
+                            <circle id="m-ring" cx="88" cy="88" r="80" stroke="#3b82f6" stroke-width="12" fill="none" stroke-dasharray="502" stroke-dashoffset="502" stroke-linecap="round" class="transition-all" />
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center font-black text-4xl" id="m-score">0%</div>
+                    </div>
+                    <button onclick="publishReport()" class="w-full bg-blue-600 py-4 rounded-xl font-black text-xs tracking-widest hover:bg-blue-500 transition shadow-xl shadow-blue-500/20">FINALIZE & PUBLISH</button>
+                </div>
+            </div>
+        </main>
+    </div>
 
-    buildPrintReport(score);
-}
+    <div id="user-view" class="hidden min-h-screen bg-[#FDFEFE] text-slate-800">
+        <div id="print-area" class="hidden"></div>
+        <nav class="p-8 max-w-5xl mx-auto flex justify-between items-center no-print">
+            <div class="font-black text-2xl text-slate-900 tracking-tighter italic">BruCheck</div>
+            <button onclick="exit()" class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-900"><i class="fa-solid fa-xmark"></i></button>
+        </nav>
 
-function buildPrintReport(score) {
-    const area = document.getElementById('print-area');
-    const date = new Date().toLocaleDateString('en-BN', { year:'numeric', month:'long', day:'numeric'});
-    area.innerHTML = `
-        <div style="padding: 50px; font-family: 'Plus Jakarta Sans', sans-serif;">
-            <h1 style="font-size: 26px; font-weight: 900; margin-bottom: 5px;">BRUCHECK OFFICIAL REPORT</h1>
-            <p style="font-size: 10px; color: #666; margin-bottom: 40px;">REF: ${db.vin} | ISSUED: ${date}</p>
-            <div style="display: flex; gap: 40px; margin-bottom: 40px;">
-                <div><p style="font-size: 10px; font-weight: 800; color: #3b82f6;">MODEL</p><p style="font-size: 18px; font-weight: 900;">${db.model}</p></div>
-                <div><p style="font-size: 10px; font-weight: 800; color: #3b82f6;">SCORE</p><p style="font-size: 18px; font-weight: 900;">${score}%</p></div>
+        <main class="max-w-5xl mx-auto px-6 space-y-8 pb-20 no-print">
+            <div class="bg-white rounded-[3rem] p-10 shadow-xl shadow-blue-500/5 flex flex-col md:flex-row items-center gap-12 border border-slate-50">
+                <div class="relative w-44 h-44">
+                    <svg class="w-full h-full transform -rotate-90">
+                        <circle cx="88" cy="88" r="78" stroke="#F1F5F9" stroke-width="14" fill="none" />
+                        <circle id="u-ring" cx="88" cy="88" r="78" stroke="#3b82f6" stroke-width="14" fill="none" stroke-dasharray="490" stroke-dashoffset="490" stroke-linecap="round" class="transition-all duration-1000" />
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span id="u-percent" class="text-5xl font-black text-slate-900">0%</span>
+                        <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mt-1">Health</span>
+                    </div>
+                </div>
+                <div class="flex-1 text-center md:text-left">
+                    <h2 id="u-model" class="text-5xl font-black text-slate-900 mb-2 leading-none">Vehicle Health</h2>
+                    <p id="u-vin" class="text-slate-400 font-medium mb-6 italic tracking-tight">Verification pending...</p>
+                    <button onclick="window.print()" class="px-8 py-3 bg-slate-900 text-white rounded-full text-xs font-black uppercase tracking-widest hover:bg-blue-600 transition shadow-lg">
+                        <i class="fa-solid fa-file-pdf mr-2"></i> Download Certificate
+                    </button>
+                </div>
             </div>
-            <div style="border-top: 1px solid #eee; padding-top: 20px;">
-                <h3 style="font-size: 12px; font-weight: 800; margin-bottom: 15px;">TECHNICAL STATUS</h3>
-                ${CHECKS.map(i => `<div style="display: flex; font-size: 12px; margin-bottom: 8px;">
-                    <span>${i.label}</span><span style="margin-left: auto; font-weight: 800;">${db.results[i.id] ? 'PASS' : 'FAIL'}</span>
-                </div>`).join('')}
+
+            <div class="bg-blue-600 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-blue-500/20">
+                <h4 class="text-[10px] font-black uppercase tracking-widest opacity-70 mb-4 italic">Mechanical Summary</h4>
+                <p id="u-notes" class="text-lg font-medium leading-relaxed">Syncing with inspector database...</p>
             </div>
-            <div style="margin-top: 50px; padding: 20px; background: #f8fafc; border-radius: 12px;">
-                <p style="font-size: 10px; font-weight: 800;">REMARKS</p>
-                <p style="font-size: 12px; font-style: italic;">${db.notes || 'N/A'}</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 no-print">
+                <div class="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-blue-900/5 border border-slate-50">
+                    <h4 class="text-[10px] font-black uppercase tracking-widest text-blue-500 mb-6 italic">Service Forecast</h4>
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="w-1 bg-blue-500 rounded-full"></div>
+                            <div>
+                                <p class="text-sm font-black text-slate-900">Next Oil Service</p>
+                                <p class="text-xs text-slate-500">Estimated: 5,000km or 6 Months</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 opacity-50">
+                            <div class="w-1 bg-slate-200 rounded-full"></div>
+                            <div>
+                                <p class="text-sm font-black text-slate-900">Timing Belt / Chain</p>
+                                <p class="text-xs text-slate-500">Inspection due in 20,000km</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white flex items-center justify-between shadow-xl">
+                    <div>
+                        <h4 class="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-2 italic">Secure Verifi-Tag</h4>
+                        <p class="text-xs opacity-70 mb-4">Scan to verify this report on-site.</p>
+                        <div class="inline-block p-2 bg-white rounded-lg">
+                            <i class="fa-solid fa-qrcode text-4xl text-slate-900"></i>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] font-bold opacity-40 uppercase">Status</p>
+                        <p class="text-green-400 font-black text-sm uppercase">Active</p>
+                    </div>
+                </div>
             </div>
-            <div style="margin-top: 60px;">
-                <p style="font-size: 10px; font-weight: 800;">INSPECTOR</p>
-                <p style="font-size: 14px; font-weight: 900; border-bottom: 2px solid #000; display: inline-block;">${db.inspector || 'BruCheck Lead'}</p>
-            </div>
-        </div>`;
-}
+
+            <div id="u-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
