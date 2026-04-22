@@ -1,6 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
 
-body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+body { 
+    font-family: 'Plus Jakarta Sans', sans-serif; 
+    -webkit-font-smoothing: antialiased; 
+    overflow-x: hidden;
+}
+
+#user-view {
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.03) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.03) 0px, transparent 50%);
+}
 
 .glass-card {
     background: rgba(255, 255, 255, 0.02);
@@ -22,13 +32,9 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: ant
 
 #m-ring, #u-ring { transition: stroke-dashoffset 1s ease-in-out; }
 
-/* PDF PRINT STYLES */
 @media print {
     .no-print { display: none !important; }
     body { background: white !important; }
     #user-view { background: white !important; }
     #print-area { display: block !important; }
-}
-main {
-    background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.03), transparent);
 }
